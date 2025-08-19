@@ -6,7 +6,7 @@
   <title>🔢 Adivinhe o Número</title>
 
   <style>
-    /* Temas (equivalente ao :global(.light/.dark) do Svelte) */
+    /* Temas */
     .light {
       --bg: #ffffff;
       --fg: #222222;
@@ -28,7 +28,7 @@
       --border: #2a2a2a;
     }
 
-    /* Layout geral (equivalente ao :global(body) e estilos do <main>) */
+    /* Layout geral */
     html, body { height: 100%; }
     body {
       margin: 0;
@@ -106,7 +106,7 @@
 
     .row { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
 
-    /* Suave “fade-in” para trocar áreas (substitui in:fade do Svelte) */
+    /* Fade-in suave */
     .fade {
       opacity: 0;
       transform: translateY(4px);
@@ -179,8 +179,8 @@
 
     // --- Configurações de dificuldade ---
     const difficulties = [
-      { label: 'Fácil (1–50)',   value: 'easy',   max: 50  },
-      { label: 'Médio (1–100)',  value: 'medium', max: 100 },
+      { label: 'Fácil (1–50)',    value: 'easy',   max: 50  },
+      { label: 'Médio (1–100)',   value: 'medium', max: 100 },
       { label: 'Difícil (1–200)', value: 'hard',   max: 200 }
     ];
 
@@ -290,47 +290,47 @@
       if (e.key === 'Enter') verificarPalpite();
     });
 
-    // --- Inicialização (equivalente ao onMount do Svelte) ---
+    // --- Inicialização ---
     document.addEventListener('DOMContentLoaded', () => {
-      // Aplica tema salvo e seleciona dificuldade padrão
       applyTheme();
       selectDifficulty.value = difficulty;
       atualizarRecordeUI();
       startGame();
     });
   </script>
+
+  <!-- Contador de visitas (por página, usando location.pathname) -->
   <script>
-(function () {
-  var NAMESPACE = 'meu-portfolio';
-var KEY = location.pathname; // usa o caminho da URL como identificador
+  (function () {
+    var NAMESPACE = 'meu-portfolio';
+    var KEY = location.pathname; // contador por página
 
-  function render(n) {
-    var id = 'visit-counter-badge';
-    var el = document.getElementById(id);
-    if (!el) {
-      el = document.createElement('div');
-      el.id = id;
-      el.style.cssText = 'position:fixed;bottom:12px;right:12px;background:rgba(0,0,0,0.4);color:#fff;padding:6px 10px;border-radius:999px;font:12px/1.2 system-ui,Arial,sans-serif;backdrop-filter:blur(4px);box-shadow:0 2px 8px rgba(0,0,0,.15);z-index:2147483647';
-      document.body.appendChild(el);
+    function render(n) {
+      var id = 'visit-counter-badge';
+      var el = document.getElementById(id);
+      if (!el) {
+        el = document.createElement('div');
+        el.id = id;
+        el.style.cssText = 'position:fixed;bottom:12px;right:12px;background:rgba(0,0,0,0.4);color:#fff;padding:6px 10px;border-radius:999px;font:12px/1.2 system-ui,Arial,sans-serif;backdrop-filter:blur(4px);box-shadow:0 2px 8px rgba(0,0,0,.15);z-index:2147483647';
+        document.body.appendChild(el);
+      }
+      el.textContent = 'Visitas: ' + n;
     }
-    el.textContent = 'Visitas: ' + n;
-  }
 
-  var url = 'https://api.countapi.xyz/hit/' +
-            encodeURIComponent(NAMESPACE) + '/' +
-            encodeURIComponent(KEY);
+    var url = 'https://api.countapi.xyz/hit/' +
+              encodeURIComponent(NAMESPACE) + '/' +
+              encodeURIComponent(KEY);
 
-  fetch(url).then(r => r.json()).then(d => {
-    render(d && typeof d.value === 'number' ? d.value : 0);
-  }).catch(() => {
-    var k = 'vc_' + NAMESPACE + '_' + KEY;
-    var n = +(localStorage.getItem(k) || 0) + 1;
-    localStorage.setItem(k, n);
-    render(n);
-  });
-})();
-</script>
+    fetch(url).then(r => r.json()).then(d => {
+      render(d && typeof d.value === 'number' ? d.value : 0);
+    }).catch(() => {
+      var k = 'vc_' + NAMESPACE + '_' + KEY;
+      var n = +(localStorage.getItem(k) || 0) + 1;
+      localStorage.setItem(k, n);
+      render(n);
+    });
+  })();
+  </script>
 
 </body>
 </html>
-
