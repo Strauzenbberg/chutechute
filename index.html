@@ -1,336 +1,391 @@
+```html
 <!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>🔢 Adivinhe o Número</title>
-
+  <title>🔢 Adivinhe o Número — Top 10 Records</title>
+  <meta name="description" content="Jogo Adivinhe o Número com histórico das 10 melhores pontuações." />
   <style>
-    /* Temas */
+    /* Themes */
     .light {
-      --bg: #ffffff;
-      --fg: #222222;
-      --primary: #6200ee;
-      --button-bg: var(--primary);
-      --button-color: #ffffff;
-      --muted: #555;
-      --card: #f7f7f7;
-      --border: #e0e0e0;
+      --bg: #ffffff; --fg: #222; --primary: #0B3B60;
+      --button-bg: var(--primary); --button-color: #fff;
+      --muted: #555; --card: #f7f7f7; --border: #e6eef5;
     }
     .dark {
-      --bg: #121212;
-      --fg: #eeeeee;
-      --primary: #bb86fc;
-      --button-bg: var(--primary);
-      --button-color: #000000;
-      --muted: #bdbdbd;
-      --card: #1a1a1a;
-      --border: #2a2a2a;
+      --bg: #0b1220; --fg: #e6eef9; --primary: #D4AF37;
+      --button-bg: var(--primary); --button-color: #000;
+      --muted: #9aa8bf; --card: #071022; --border: #122033;
     }
 
-    /* Layout geral */
-    html, body { height: 100%; }
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--fg);
-    }
-    main {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      align-items: center;
-      padding: 2rem;
-      box-sizing: border-box;
-      max-width: 720px;
-      margin: 0 auto;
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:var(--bg);
+      color:var(--fg);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
 
-    .topbar {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
+    main{
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      gap:1rem;
+      align-items:center;
+      padding:2rem;
+      box-sizing:border-box;
+      max-width:900px;
+      margin:0 auto;
     }
 
-    h1 { margin: 0.5rem 0 0; }
-
-    .card {
-      width: 100%;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1rem;
-      box-sizing: border-box;
+    .topbar{
+      width:100%;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:1rem;
     }
 
-    label { display: inline-block; margin-right: .5rem; }
+    h1{margin:.25rem 0 .5rem;font-size:1.6rem}
+    p{margin:0}
 
-    select, input {
-      font-size: 1rem;
-      padding: 0.5rem 0.6rem;
-      margin: 0.5rem 0;
-      border: 1px solid var(--fg);
-      border-radius: 6px;
-      background: var(--bg);
-      color: var(--fg);
-      outline: none;
+    .card{
+      width:100%;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:1rem;
+      box-sizing:border-box;
+      box-shadow:0 6px 18px rgba(11,59,96,0.06);
     }
 
-    input[type="number"] { width: 200px; }
+    label{display:inline-block;margin-right:.5rem;font-weight:600}
+    select,input{font-size:1rem;padding:.5rem .6rem;margin:.4rem 0;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--fg)}
+    input[type="number"]{width:220px}
 
-    button {
-      margin: 0.5rem 0.25rem;
-      padding: 0.6rem 1.0rem;
-      font-size: 1rem;
-      border: none;
-      border-radius: 6px;
-      background: var(--button-bg);
-      color: var(--button-color);
-      cursor: pointer;
-      transition: transform .06s ease, filter .12s ease;
+    .row{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+
+    button{
+      margin:.4rem .25rem;
+      padding:.6rem .9rem;
+      font-size:1rem;
+      border:none;
+      border-radius:8px;
+      background:var(--button-bg);
+      color:var(--button-color);
+      cursor:pointer;
+      transition:transform .06s ease,filter .12s ease,box-shadow .12s ease;
+      box-shadow:0 8px 20px rgba(11,59,96,0.08);
     }
-    button:hover { filter: brightness(1.05); }
-    button:active { transform: translateY(1px); }
+    button:hover{filter:brightness(1.03); box-shadow:0 12px 28px rgba(11,59,96,0.12)}
+    button:active{transform:translateY(1px)}
 
-    .mensagem {
-      margin-top: 1rem;
-      font-size: 1.2rem;
-      min-height: 1.5em;
+    .mensagem{margin-top:1rem;font-size:1.1rem;min-height:1.4em}
+    .muted{color:var(--muted)}
+    .hidden{display:none!important}
+
+    /* Records list */
+    #recordsList{display:grid;gap:.5rem;margin-top:.5rem}
+    .record-item{display:flex;gap:.75rem;align-items:center;justify-content:space-between;padding:.5rem .75rem;border-radius:8px;border:1px solid var(--border);background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent)}
+    .record-left{display:flex;gap:.75rem;align-items:center}
+
+    /* small screens */
+    @media (max-width:520px){
+      input[type="number"]{width:140px}
+      .record-item{flex-direction:column;align-items:flex-start;gap:.25rem}
     }
 
-    .muted { color: var(--muted); }
-
-    .row { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
-
-    /* Fade-in suave */
-    .fade {
-      opacity: 0;
-      transform: translateY(4px);
-      animation: fadeIn .25s ease forwards;
-    }
-    @keyframes fadeIn {
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .hidden { display: none !important; }
+    /* subtle fade-in */
+    .fade{opacity:0;transform:translateY(6px);animation:fadeIn .28s ease forwards}
+    @keyframes fadeIn{to{opacity:1;transform:none}}
+    :focus-visible{outline:3px solid rgba(100,150,200,0.18);outline-offset:3px}
   </style>
 </head>
-
 <body class="light">
   <main>
     <div class="topbar">
       <div class="row">
-        <label for="difficulty">Dificuldade:</label>
-        <select id="difficulty">
+        <label for="difficulty">Dificuldade</label>
+        <select id="difficulty" aria-label="Selecionar dificuldade">
           <option value="easy">Fácil (1–50)</option>
           <option value="medium" selected>Médio (1–100)</option>
           <option value="hard">Difícil (1–200)</option>
         </select>
       </div>
-      <button id="btnTheme">☀️ Light</button>
+
+      <div class="row">
+        <button id="btnTheme" aria-pressed="false">☀️ Light</button>
+      </div>
     </div>
 
     <h1 class="fade">🔢 Adivinhe o Número</h1>
     <p id="rangeInfo" class="fade muted">Escolha um número entre 1 e 100</p>
 
-    <div class="card">
-      <div id="gameArea" class="fade">
-        <input
-          id="palpite"
-          type="number"
-          min="1"
-          max="100"
-          placeholder="Seu palpite"
-          aria-label="Digite um número"
-        />
+    <div class="card fade" role="region" aria-labelledby="game-title">
+      <div id="gameArea" class="row" aria-live="polite">
+        <input id="palpite" type="number" min="1" max="100" placeholder="Seu palpite" aria-label="Digite seu palpite" />
         <button id="btnVerificar">Verificar</button>
       </div>
 
-      <div id="againArea" class="fade hidden">
+      <div id="againArea" class="row hidden" style="margin-top:.5rem">
         <button id="btnReiniciar">Jogar Novamente</button>
+        <button id="btnResetHistory" title="Limpar histórico de recordes">Limpar histórico</button>
       </div>
 
-      <div id="mensagem" class="mensagem fade"></div>
+      <div id="mensagem" class="mensagem fade" aria-live="polite"></div>
 
-      <div id="recorde" class="fade muted" style="margin-top:1rem; display:none;">
-        🏆 Melhor recorde: <span id="bestScoreText"></span> tentativa(s)
+      <div id="recorde" class="fade muted" style="margin-top:1rem;display:none;">
+        🏆 Melhor recorde: <strong id="bestScoreText"></strong> tentativa(s)
+      </div>
+
+      <div id="recordsArea" class="fade" style="margin-top:1rem;display:none;">
+        <h3 style="margin:.25rem 0 .5rem">🏅 Últimas melhores pontuações</h3>
+        <div id="recordsList" class="muted" aria-live="polite"></div>
       </div>
     </div>
   </main>
 
   <script>
-    // --- Utilidades de armazenamento seguro ---
-    function isLocalStorageAvailable() {
-      try {
-        const k = '__storage_test__';
-        window.localStorage.setItem(k, k);
-        window.localStorage.removeItem(k);
-        return true;
-      } catch {
-        return false;
+    // Single-file game with top-10 records stored in localStorage
+    (function () {
+      // --- Storage helpers ---
+      function isLocalStorageAvailable() {
+        try {
+          const k = '__storage_test__';
+          window.localStorage.setItem(k, k);
+          window.localStorage.removeItem(k);
+          return true;
+        } catch {
+          return false;
+        }
       }
-    }
-    const hasLocalStorage = isLocalStorageAvailable();
-    const getStorageItem = (key) => hasLocalStorage ? window.localStorage.getItem(key) : null;
-    const setStorageItem = (key, value) => { if (hasLocalStorage) window.localStorage.setItem(key, value); };
+      const hasLocalStorage = isLocalStorageAvailable();
+      const getStorage = (k) => hasLocalStorage ? window.localStorage.getItem(k) : null;
+      const setStorage = (k, v) => { if (hasLocalStorage) window.localStorage.setItem(k, v); };
 
-    // --- Configurações de dificuldade ---
-    const difficulties = [
-      { label: 'Fácil (1–50)',    value: 'easy',   max: 50  },
-      { label: 'Médio (1–100)',   value: 'medium', max: 100 },
-      { label: 'Difícil (1–200)', value: 'hard',   max: 200 }
-    ];
+      // --- Config / state ---
+      const DIFFICULTIES = { easy: 50, medium: 100, hard: 200 };
+      let difficulty = 'medium';
+      let maxNumber = DIFFICULTIES[difficulty];
+      let numeroSecreto = null;
+      let tentativas = 0;
+      let jogoFinalizado = false;
+      let bestScore = parseInt(getStorage('bestScore'), 10) || null;
 
-    // --- Estado do tema ---
-    let theme = getStorageItem('theme') || 'light';
-    function applyTheme() {
-      document.body.classList.remove('light', 'dark');
-      document.body.classList.add(theme);
-      btnTheme.textContent = theme === 'dark' ? '🌙 Dark' : '☀️ Light';
-    }
-    function toggleTheme() {
-      theme = theme === 'light' ? 'dark' : 'light';
-      setStorageItem('theme', theme);
-      applyTheme();
-    }
+      // --- DOM refs ---
+      const selectDifficulty = document.getElementById('difficulty');
+      const btnTheme = document.getElementById('btnTheme');
+      const rangeInfo = document.getElementById('rangeInfo');
+      const palpiteEl = document.getElementById('palpite');
+      const btnVerificar = document.getElementById('btnVerificar');
+      const btnReiniciar = document.getElementById('btnReiniciar');
+      const btnResetHistory = document.getElementById('btnResetHistory');
+      const gameArea = document.getElementById('gameArea');
+      const againArea = document.getElementById('againArea');
+      const mensagemEl = document.getElementById('mensagem');
+      const recordeEl = document.getElementById('recorde');
+      const bestScoreText = document.getElementById('bestScoreText');
+      const recordsArea = document.getElementById('recordsArea');
+      const recordsList = document.getElementById('recordsList');
 
-    // --- Estado do jogo ---
-    let difficulty = 'medium';
-    let maxNumber  = 100;
-    let numeroSecreto;
-    let tentativas = 0;
-    let jogoFinalizado = false;
-    let bestScore = parseInt(getStorageItem('bestScore'), 10) || null;
-
-    // --- Referências do DOM ---
-    const selectDifficulty = document.getElementById('difficulty');
-    const btnTheme = document.getElementById('btnTheme');
-    const rangeInfo = document.getElementById('rangeInfo');
-    const palpiteEl = document.getElementById('palpite');
-    const btnVerificar = document.getElementById('btnVerificar');
-    const btnReiniciar = document.getElementById('btnReiniciar');
-    const gameArea = document.getElementById('gameArea');
-    const againArea = document.getElementById('againArea');
-    const mensagemEl = document.getElementById('mensagem');
-    const recordeEl = document.getElementById('recorde');
-    const bestScoreText = document.getElementById('bestScoreText');
-
-    function pickMaxByDifficulty(value) {
-      const cfg = difficulties.find(d => d.value === value) || difficulties[1];
-      return cfg.max;
-    }
-
-    function startGame() {
-      maxNumber = pickMaxByDifficulty(difficulty);
-      numeroSecreto = Math.floor(Math.random() * maxNumber) + 1;
-      tentativas = 0;
-      jogoFinalizado = false;
-      mensagemEl.textContent = '';
-      palpiteEl.value = '';
-      palpiteEl.min = '1';
-      palpiteEl.max = String(maxNumber);
-      rangeInfo.textContent = `Escolha um número entre 1 e ${maxNumber}`;
-      gameArea.classList.remove('hidden');
-      againArea.classList.add('hidden');
-      palpiteEl.focus();
-    }
-
-    function atualizarRecordeUI() {
-      if (bestScore && Number.isFinite(bestScore)) {
-        bestScoreText.textContent = bestScore;
-        recordeEl.style.display = '';
-      } else {
-        recordeEl.style.display = 'none';
+      // --- Theme handling ---
+      let theme = getStorage('theme') || 'light';
+      function applyTheme() {
+        document.body.classList.remove('light', 'dark');
+        document.body.classList.add(theme);
+        btnTheme.textContent = theme === 'dark' ? '🌙 Dark' : '☀️ Light';
+        btnTheme.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
       }
-    }
+      function toggleTheme() {
+        theme = theme === 'light' ? 'dark' : 'light';
+        setStorage('theme', theme);
+        applyTheme();
+      }
+      btnTheme.addEventListener('click', toggleTheme);
 
-    function verificarPalpite() {
-      const num = parseInt(palpiteEl.value, 10);
-      if (!num || num < 1 || num > maxNumber) {
-        mensagemEl.textContent = `Insira um número entre 1 e ${maxNumber}.`;
-        return;
+      // --- Records storage ---
+      // records: array of { tries:number, difficulty:string, max:number, date: ISOString }
+      function getRecords() {
+        try {
+          const raw = getStorage('records');
+          return raw ? JSON.parse(raw) : [];
+        } catch {
+          return [];
+        }
+      }
+      function setRecords(arr) {
+        try {
+          // keep a reasonable cap
+          setStorage('records', JSON.stringify(arr.slice(0, 200)));
+        } catch {}
+      }
+      function clearRecords() {
+        try {
+          if (hasLocalStorage) localStorage.removeItem('records');
+        } catch {}
       }
 
-      tentativas++;
-      if (num === numeroSecreto) {
-        mensagemEl.textContent = `🎉 Acertou em ${tentativas} tentativa(s)!`;
-        jogoFinalizado = true;
+      // --- UI updates ---
+      function atualizarRecordeUI() {
+        if (bestScore && Number.isFinite(bestScore)) {
+          bestScoreText.textContent = bestScore;
+          recordeEl.style.display = '';
+        } else {
+          recordeEl.style.display = 'none';
+        }
+      }
 
-        if (!bestScore || tentativas < bestScore) {
-          bestScore = tentativas;
-          setStorageItem('bestScore', String(bestScore));
-          atualizarRecordeUI();
+      function renderTop10() {
+        const all = getRecords();
+        if (!all.length) {
+          recordsArea.style.display = 'none';
+          recordsList.innerHTML = '';
+          return;
         }
 
-        gameArea.classList.add('hidden');
-        againArea.classList.remove('hidden');
-      } else if (num < numeroSecreto) {
-        mensagemEl.textContent = '🔼 Muito baixo!';
-      } else {
-        mensagemEl.textContent = '🔽 Muito alto!';
+        // sort by tries asc, tie-breaker: date desc (more recent first)
+        const sorted = all.slice().sort((a, b) => {
+          if (a.tries !== b.tries) return a.tries - b.tries;
+          return new Date(b.date) - new Date(a.date);
+        }).slice(0, 10);
+
+        recordsList.innerHTML = '';
+        sorted.forEach((rec, idx) => {
+          const item = document.createElement('div');
+          item.className = 'record-item';
+          const left = document.createElement('div');
+          left.className = 'record-left';
+          left.innerHTML = `<strong>#${idx + 1}</strong>
+                            <div style="min-width:120px">${rec.tries} tentativa(s)</div>
+                            <div class="muted" style="min-width:110px">${rec.difficulty.toUpperCase()} (1–${rec.max})</div>`;
+          const right = document.createElement('div');
+          right.className = 'muted';
+          right.textContent = new Date(rec.date).toLocaleString();
+          item.appendChild(left);
+          item.appendChild(right);
+          recordsList.appendChild(item);
+        });
+
+        recordsArea.style.display = '';
       }
-    }
 
-    function reiniciarJogo() {
-      startGame();
-    }
-
-    // --- Eventos ---
-    btnTheme.addEventListener('click', toggleTheme);
-    selectDifficulty.addEventListener('change', () => {
-      difficulty = selectDifficulty.value;
-      startGame();
-    });
-    btnVerificar.addEventListener('click', verificarPalpite);
-    btnReiniciar.addEventListener('click', reiniciarJogo);
-    palpiteEl.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') verificarPalpite();
-    });
-
-    // --- Inicialização ---
-    document.addEventListener('DOMContentLoaded', () => {
-      applyTheme();
-      selectDifficulty.value = difficulty;
-      atualizarRecordeUI();
-      startGame();
-    });
-  </script>
-
-  <!-- Contador de visitas (por página, usando location.pathname) -->
-  <script>
-  (function () {
-    var NAMESPACE = 'meu-portfolio';
-    var KEY = location.pathname; // contador por página
-
-    function render(n) {
-      var id = 'visit-counter-badge';
-      var el = document.getElementById(id);
-      if (!el) {
-        el = document.createElement('div');
-        el.id = id;
-        el.style.cssText = 'position:fixed;bottom:12px;right:12px;background:rgba(0,0,0,0.4);color:#fff;padding:6px 10px;border-radius:999px;font:12px/1.2 system-ui,Arial,sans-serif;backdrop-filter:blur(4px);box-shadow:0 2px 8px rgba(0,0,0,.15);z-index:2147483647';
-        document.body.appendChild(el);
+      // --- Game logic ---
+      function pickMaxByDifficulty(value) {
+        return DIFFICULTIES[value] || DIFFICULTIES['medium'];
       }
-      el.textContent = 'Visitas: ' + n;
-    }
 
-    var url = 'https://api.countapi.xyz/hit/' +
-              encodeURIComponent(NAMESPACE) + '/' +
-              encodeURIComponent(KEY);
+      function startGame() {
+        maxNumber = pickMaxByDifficulty(difficulty);
+        numeroSecreto = Math.floor(Math.random() * maxNumber) + 1;
+        tentativas = 0;
+        jogoFinalizado = false;
+        mensagemEl.textContent = '';
+        palpiteEl.value = '';
+        palpiteEl.min = 1;
+        palpiteEl.max = maxNumber;
+        rangeInfo.textContent = `Escolha um número entre 1 e ${maxNumber}`;
+        gameArea.classList.remove('hidden');
+        againArea.classList.add('hidden');
+        palpiteEl.focus();
+      }
 
-    fetch(url).then(r => r.json()).then(d => {
-      render(d && typeof d.value === 'number' ? d.value : 0);
-    }).catch(() => {
-      var k = 'vc_' + NAMESPACE + '_' + KEY;
-      var n = +(localStorage.getItem(k) || 0) + 1;
-      localStorage.setItem(k, n);
-      render(n);
-    });
-  })();
+      function registrarVitoria() {
+        // update best score
+        if (!bestScore || tentativas < bestScore) {
+          bestScore = tentativas;
+          setStorage('bestScore', String(bestScore));
+          atualizarRecordeUI();
+        }
+        // push to history
+        const all = getRecords();
+        all.unshift({
+          tries: tentativas,
+          difficulty,
+          max: maxNumber,
+          date: new Date().toISOString()
+        });
+        // keep cap
+        setRecords(all);
+        renderTop10();
+      }
+
+      function verificarPalpite() {
+        if (jogoFinalizado) return;
+        const raw = palpiteEl.value;
+        const num = parseInt(raw, 10);
+        if (!Number.isFinite(num) || num < 1 || num > maxNumber) {
+          mensagemEl.textContent = `Insira um número entre 1 e ${maxNumber}.`;
+          return;
+        }
+
+        tentativas++;
+        if (num === numeroSecreto) {
+          mensagemEl.textContent = `🎉 Acertou em ${tentativas} tentativa(s)!`;
+          jogoFinalizado = true;
+          registrarVitoria();
+          gameArea.classList.add('hidden');
+          againArea.classList.remove('hidden');
+        } else if (num < numeroSecreto) {
+          mensagemEl.textContent = '🔼 Muito baixo!';
+        } else {
+          mensagemEl.textContent = '🔽 Muito alto!';
+        }
+      }
+
+      function reiniciarJogo() {
+        startGame();
+      }
+
+      // --- Events ---
+      selectDifficulty.addEventListener('change', () => {
+        difficulty = selectDifficulty.value;
+        startGame();
+      });
+      btnVerificar.addEventListener('click', verificarPalpite);
+      btnReiniciar.addEventListener('click', reiniciarJogo);
+      btnResetHistory.addEventListener('click', () => {
+        if (confirm('Deseja realmente limpar o histórico de recordes? Esta ação não pode ser desfeita.')) {
+          clearRecords();
+          // keep bestScore separate; optionally clear it too
+          // localStorage.removeItem('bestScore');
+          renderTop10();
+          alert('Histórico limpo.');
+        }
+      });
+      palpiteEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') verificarPalpite();
+      });
+
+      // --- Init on DOM ready ---
+      document.addEventListener('DOMContentLoaded', () => {
+        // apply theme
+        applyTheme();
+        // set difficulty select
+        selectDifficulty.value = difficulty;
+        // update UI
+        atualizarRecordeUI();
+        renderTop10();
+        startGame();
+      });
+
+      // expose applyTheme to closure
+      function applyTheme() {
+        document.body.classList.remove('light', 'dark');
+        document.body.classList.add(theme);
+        btnTheme.textContent = theme === 'dark' ? '🌙 Dark' : '☀️ Light';
+        btnTheme.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+      }
+      // ensure theme toggle uses stored value
+      (function initTheme() {
+        theme = getStorage('theme') || theme;
+        applyTheme();
+      })();
+
+    })();
   </script>
-
 </body>
 </html>
+```
